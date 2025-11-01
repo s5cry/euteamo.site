@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>euteamonana</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #fff9fb 0%, #ffe8f0 100%);
+            color: #7a3a4a;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #d64d6d;
+        }
+
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd6e0 0%, #ffb3c1 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .splash-content {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .splash-heart {
+            font-size: 4rem;
+            color: #ff4d6d;
+            margin-bottom: 2rem;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        .click-prompt {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            padding: 1.5rem 3rem;
+            border-radius: 50px;
+            background: #ff4d6d;
+            color: white;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.3);
+            border: none;
+            font-family: 'Playfair Display', serif;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .nav-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.8rem;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0.8rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container.visible {
+            opacity: 1;
+        }
+
+        .nav-button {
+            padding: 0.8rem 1.2rem;
+            border-radius: 30px;
+            background: rgba(255, 77, 109, 0.1);
+            border: 2px solid #ff4d6d;
+            color: #7a3a4a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-button.active,
+        .nav-button:hover {
+            background: #ff4d6d;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 80px 20px 100px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .section::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section.active {
+            opacity: 1;
+            visibility: visible;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            color: rgba(255, 77, 109, 0.15);
+            animation: float 8s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        #home {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d64d6d;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .countup {
+            font-size: 2.5rem;
+            text-align: center;
+            color: #ff4d6d;
+            margin: 1.5rem 0;
+            animation: textGlow 2s infinite alternate;
+            font-family: 'Playfair Display', serif;
+        }
+
+        @keyframes textGlow {
+            from { text-shadow: 0 0 10px rgba(255, 77, 109, 0.3); }
+            to { text-shadow: 0 0 20px rgba(255, 77, 109, 0.5); }
+        }
+
+        .love-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 2rem auto;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            max-width: 600px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .photo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .photo-card {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.4s ease;
+            background: white;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-caption {
+            padding: 1.5rem;
+            text-align: center;
+            font-style: italic;
+            color: #9a5d6c;
+        }
+
+        .special-letter {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            max-width: 700px;
+            box-shadow: 0 8px 25px rgba(122, 58, 74, 0.15);
+            text-align: justify;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .special-letter:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff99b3, #ff4d6d, #ff99b3);
+            animation: borderFlow 8s linear infinite;
+        }
+        
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 8px 25px rgba(122, 58, 74, 0.15);
+        }
+
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #d64d6d;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: 2px solid #ffb3c1;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .quiz-option:hover {
+            background: #fff9fb;
+            border-color: #ff4d6d;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: #9a5d6c;
+            font-size: 0.9rem;
+        }
+
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 77, 109, 0.9);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+            background: rgba(255, 77, 109, 1);
+        }
+
+        .quiz-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quiz-progress {
+            width: 100%;
+            max-width: 600px;
+            height: 10px;
+            background: #ffe8f0;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff99b3, #ff4d6d);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .quiz-question {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #d64d6d;
+        }
+
+        .quiz-options-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 8px 25px rgba(122, 58, 74, 0.15);
+        }
+
+        .quiz-correct {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .quiz-wrong {
+            color: #F44336;
+            text-decoration: line-through;
+        }
+
+        .final-message {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            max-width: 700px;
+            box-shadow: 0 8px 25px rgba(122, 58, 74, 0.15);
+            text-align: center;
+        }
+
+        .suspense {
+            font-size: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+            color: #ff4d6d;
+            animation: pulse 2s infinite;
+        }
+
+        @media (min-width: 768px) {
+            .photo-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .photo-card {
+                max-width: 300px;
+            }
+            
+            .nav-button {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2.2rem;
+            }
+            
+            .countup {
+                font-size: 2rem;
+            }
+            
+            .love-text, .special-letter {
+                padding: 1.5rem;
+            }
+            
+            .nav-container {
+                width: 90%;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 0.8rem;
+            }
+            
+            .nav-button {
+                white-space: nowrap;
+            }
+            
+            .quiz-question {
+                font-size: 1.2rem;
+            }
+        }
+        .book-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            height: 70vh;
+            margin: 0 auto;
+            perspective: 1500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(122, 58, 74, 0.1);
+            padding: 2rem;
+            overflow-y: auto;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .page-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #d64d6d;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #ffb3c1;
+            padding-bottom: 0.5rem;
+        }
+
+        .page-text {
+            flex: 1;
+            padding: 1rem 0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .page-number {
+            text-align: center;
+            margin-top: 1rem;
+            color: #9a5d6c;
+            font-style: italic;
+        }
+
+        .book-cover {
+            background: linear-gradient(135deg, #ffd6e0 0%, #ffb3c1 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #7a3a4a;
+        }
+
+        .cover-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cover-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #d64d6d;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .cover-subtitle {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .book-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 800px;
+            margin: 1.5rem auto;
+        }
+
+        .book-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .book-btn:hover {
+            background: #d64d6d;
+            transform: translateY(-2px);
+        }
+
+        .book-btn:disabled {
+            background: #ffb3c1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .book-progress {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 8px;
+            background: #ffe8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .book-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff99b3, #ff4d6d);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        @keyframes pageTurn {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(-180deg); }
+        }
+
+        @keyframes pageTurnReverse {
+            0% { transform: rotateY(-180deg); }
+            100% { transform: rotateY(0deg); }
+        }
+
+        .page-turning {
+            animation: pageTurn 0.8s forwards;
+        }
+
+        .page-turning-reverse {
+            animation: pageTurnReverse 0.8s forwards;
+        }
+
+        @media (max-width: 768px) {
+            .book-container {
+                height: 60vh;
+            }
+            
+            .page {
+                padding: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .page-text {
+                font-size: 1rem;
+            }
+            
+            .cover-title {
+                font-size: 2rem;
+            }
+            
+            .cover-image {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .book-container {
+                height: 50vh;
+            }
+            
+            .page {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.3rem;
+            }
+            
+            .page-text {
+                font-size: 0.9rem;
+            }
+            
+            .cover-title {
+                font-size: 1.8rem;
+            }
+            
+            .cover-image {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .book-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-heart">
+                <i class="fas fa-heart"></i>
+            </div>
+            <button class="click-prompt">clica ai e tals</button>
+        </div>
+    </div>
+
+    <div class="music-control" id="musicControl">
+        <i class="fas fa-volume-mute"></i>
+    </div>
+
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+     <div class="nav-container" id="navContainer">
+        <div class="nav-button active" data-section="home"><i class="fas fa-home"></i> wow</div>
+        <div class="nav-button" data-section="her"><i class="fas fa-heart"></i> vc</div>
+        <div class="nav-button" data-section="us"><i class="fas fa-users"></i> euivc</div>
+        <div class="nav-button" data-section="memories"><i class="fas fa-images"></i> nois</div>
+        <div class="nav-button" data-section="letter"><i class="fas fa-envelope"></i> le ai e tals</div>
+        <div class="nav-button" data-section="quiz"><i class="fas fa-question-circle"></i> quiz</div>
+        <div class="nav-button" data-section="book"><i class="fas fa-book"></i> le tudao</div>
+    </div>
+    <section class="section active" id="home">
+        <h1 class="main-title">ebaaa</h1>
+        <div class="countup" id="daysCounter">junto pra sempre</div>
+        <div class="love-text">
+            eu te amo demais, minha princesa! você é tudo pra mim, de verdade. ficar contigo tem sido a melhor coisa que já me aconteceu e eu amo isso tudo. a gente ainda tá se conhecendo, eu sei disso, mas cada dia contigo me faz querer mais e mais te escolher pra sempre. eu amo te conhecer, amo te ter, amo te amar. você é incrível, perfeita mesmo. obrigado por tudo até agora, meu amor.
+        </div>
+        <div class="photo-container">
+            <div class="photo-card">
+                <img src="https://i.imgur.com/gadW4IV.png">
+                <div class="photo-caption">panda coelho lontra</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="her">
+        <h2 class="main-title">nanasigmaaurafarm</h2>
+        <div class="love-text">
+            olha vc toda princesa toda gostosa babei
+        </div>
+        <div class="photo-container">
+            <div class="photo-card">
+                <img src="https://i.imgur.com/txkzzsf.png">
+                <div class="photo-caption">oi vc é perfeita</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="us">
+        <h2 class="main-title">eu i vc</h2>
+        <div class="love-text">
+            oi olha nois
+        </div>
+        <div class="photo-container">
+            <div class="photo-card">
+                <img src="https://i.imgur.com/c7Mm5cM.jpeg">
+                <div class="photo-caption">oi olha eu</div>
+            </div>
+            <div class="photo-card">
+                <img src="https://i.imgur.com/0NZ0wYx.png">
+                <div class="photo-caption">oi olha vc</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="memories">
+        <h2 class="main-title">nois</h2>
+        <div class="love-text">
+            eu amo cada momento que temos juntos, e espero que todos os meus momentos especiais sejam contigo, voce é incrivel meu amor
+        </div>
+        <div class="photo-container">
+            <div class="photo-card">
+                <img src="https://i.imgur.com/p4Ncsnv.png">
+                <div class="photo-caption">obby de fogo i agua</div>
+            </div>
+            <div class="photo-card">
+                <img src="https://i.imgur.com/PLxz234.png">
+                <div class="photo-caption">jogo di cavalo</div>
+            </div>
+            <div class="photo-card">
+                <img src="https://i.imgur.com/7tsJk0q.png">
+                <div class="photo-caption">nois junto</div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="section" id="letter">
+        <h2 class="main-title">le tudo ai e tals</h2>
+        <div class="special-letter">
+            <p>você é tudo pra mim, minha princesinha. eu te amo com o coração, corpo e  minha alma. fico muito feliz por estar todo dia com você, e mesmo que eu repita isso todos os dias, nunca vou cansar de dizer: EU TE AMO!!!!!!!! você é o amor da minha vida, a pessoa que eu escolho e quero pra sempre ao meu lado. eu amo cada detalhe seu, SABIA??? eu amo seu rostinho, seus olhinhos, seu sorriso, seu cabelo, sua nareba, sua orebinha seu jeito de falar, de pensar, de ser e de demonstrar. amo tudo em você. quero estar contigo em todos os momentos, bons e ruins. quero dividir tudo, caminhar junto, te apoiar quando precisar e ficar MUITO FELIZ em cada alegria ao seu lado. cada minuto com você faz o meu dia melhor, só por ser você.
+
+eu te amo muito, minha nenem. nenhuma palavra consegue dizer tudo o que eu sinto.
+        <div class="footer">
+            eu te amo
+        </div>
+    </section>
+
+    <section class="section quiz-section" id="quiz">
+        <h2 class="main-title">pergunta aurudas</h2>
+        <div class="quiz-container">
+            <div class="quiz-progress">
+                <div class="quiz-progress-bar" id="quizProgress"></div>
+            </div>
+            
+            <div id="quizContent">
+                <div class="quiz-question" id="quizQuestion">oi joga</div>
+                <div class="quiz-options-container" id="quizOptions">
+                    <button class="quiz-option" onclick="startQuiz()">clica ai e tals</button>
+                </div>
+            </div>
+            
+            <div id="quizResult" style="display: none;"></div>
+        </div>
+    </section>
+
+    <section class="section" id="book">
+        <h2 class="main-title">livrinho pra vc</h2>
+        <div class="book-progress">
+            <div class="book-progress-bar" id="bookProgress"></div>
+        </div>
+        <div class="book-container">
+            <div class="book" id="bookElement">
+            </div>
+        </div>
+        <div class="book-controls">
+            <button class="book-btn" id="prevPage" disabled>
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+            <button class="book-btn" id="nextPage">
+                Próxima <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <audio id="backgroundMusic" loop>
+        <source src=""audio background.mp3 type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const splashScreen = document.getElementById('splashScreen');
+            const navContainer = document.getElementById('navContainer');
+            const sections = document.querySelectorAll('.section');
+            const navButtons = document.querySelectorAll('.nav-button');
+            const floatingHearts = document.getElementById('floatingHearts');
+            const daysCounter = document.getElementById('daysCounter');
+            
+            const startDate = new Date('2025-10-17');
+            
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const musicControl = document.getElementById('musicControl');
+            let isMusicPlaying = false;
+
+            function toggleMusic() {
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    const playPromise = backgroundMusic.play();
+                    backgroundMusic.volume = 0.1;
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log('Reprodução automática prevenida pelo navegador.');
+                            musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                            musicControl.style.background = '#9a5d6c';
+                            isMusicPlaying = false;
+                        });
+                    }
+                    
+                    musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+                isMusicPlaying = !isMusicPlaying;
+            }
+
+            musicControl.addEventListener('click', toggleMusic);
+            
+            function createHearts() {
+                for (let i = 0; i < 15; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('floating-heart');
+                    heart.innerHTML = '<i class="fas fa-heart"></i>';
+                    heart.style.left = `${Math.random() * 100}%`;
+                    heart.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                    heart.style.animationDelay = `${Math.random() * 5}s`;
+                    floatingHearts.appendChild(heart);
+                }
+            }
+            
+            function updateCounter() {
+                const today = new Date();
+                const diffTime = Math.abs(today - startDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                daysCounter.textContent = `${diffDays} dias juntos`;
+            }
+            
+            function showSection(sectionId) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if(section.id === sectionId) {
+                        setTimeout(() => section.classList.add('active'), 50);
+                    }
+                });
+                
+                navButtons.forEach(button => {
+                    button.classList.remove('active');
+                    if(button.dataset.section === sectionId) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+            
+            document.querySelector('.click-prompt').addEventListener('click', function() {
+                splashScreen.style.opacity = '0';
+                splashScreen.style.pointerEvents = 'none';
+                navContainer.classList.add('visible');
+                
+                setTimeout(() => {
+                    if (!isMusicPlaying) {
+                        toggleMusic();
+                    }
+                }, 300);
+                
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                }, 1000);
+            });
+            
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    showSection(button.dataset.section);
+                });
+            });
+            
+            createHearts();
+            updateCounter();
+            setInterval(updateCounter, 60000); 
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerHTML = '<i class="fas fa-heart"></i>';
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                floatingHearts.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 15000);
+            }, 3000);
+        });
+
+        let currentQuestion = 0;
+        let score = 0;
+        const questions = [
+            {
+                question: "Qual minha cor favorita?",
+                options: ["Azul", "Verde", "Roxo", "Vermelho"],
+                correct: 2
+            },
+            {
+                question: "Qual minha comida favorita?",
+                options: ["Hambúrguer", "Pizza", "Sushi", "Lasanha"],
+                correct: 1
+            },
+            {
+                question: "Qual minha pessoa favorita?",
+                options: ["Bolsonaro", "Donald Trump", "Você", "Bob Marley"],
+                correct: 2
+            },
+            {
+                question: "Qual o dia do meu aniversário?",
+                options: ["15/05", "21/08", "03/09", "20/01"],
+                correct: 1
+            },
+            {
+                question: "Quer namorar comigo e tals?",
+                options: ["Sim", "Eu não sai fora!"],
+                correct: 0
+            }
+        ];
+
+        function startQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const quizProgress = document.getElementById('quizProgress');
+            const quizQuestion = document.getElementById('quizQuestion');
+            const quizOptions = document.getElementById('quizOptions');
+            
+            quizProgress.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+            
+            if (currentQuestion === questions.length - 1) {
+                quizQuestion.innerHTML = "i agora...";
+                quizOptions.innerHTML = "";
+                
+                setTimeout(() => {
+                    quizQuestion.innerHTML = questions[currentQuestion].question;
+                    displayOptions();
+                }, 2000);
+            } else {
+                quizQuestion.innerHTML = questions[currentQuestion].question;
+                displayOptions();
+            }
+            
+            function displayOptions() {
+                quizOptions.innerHTML = "";
+                questions[currentQuestion].options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'quiz-option';
+                    button.innerHTML = option;
+                    button.onclick = () => selectAnswer(index);
+                    quizOptions.appendChild(button);
+                });
+            }
+        }
+
+        function selectAnswer(selected) {
+            const correct = questions[currentQuestion].correct;
+            const quizOptions = document.getElementById('quizOptions');
+            const options = quizOptions.getElementsByClassName('quiz-option');
+            
+            options[correct].classList.add('quiz-correct');
+            if (selected !== correct) {
+                options[selected].classList.add('quiz-wrong');
+            }
+            
+            if (selected === correct) {
+                score++;
+            }
+            
+            setTimeout(() => {
+                currentQuestion++;
+                
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1500);
+        }
+
+        function showResult() {
+            const quizContent = document.getElementById('quizContent');
+            const quizResult = document.getElementById('quizResult');
+            const quizProgress = document.getElementById('quizProgress');
+            
+            quizProgress.style.width = '100%';
+            
+            quizContent.style.display = 'none';
+            quizResult.style.display = 'block';
+            
+            if (score === questions.length) {
+                quizResult.innerHTML = `
+                    <h3 class="quiz-title">acertou ${score} de ${questions.length} perguntas, mds que sigma</h3>
+                    <div class="final-message">
+                        <p>esse foi o pedido de namoro meu amor, então eu espero que tenha gostado KKKKKKKKKKKKKK enfim, a gente ainda está se conhecendo, mas eu já tenho certeza do que quero e acredito que você também. queremos muuuuito assumir para TODO MUNDO o que temos e gritar para o mundo que estamos juntos. eu te amo muito, obrigado por ser minha.</p>
+                    </div>
+                    <button class="quiz-option" onclick="restartQuiz()">fazer de novo</button>
+                `;
+            } else {
+                quizResult.innerHTML = `
+                    <h3 class="quiz-title">Você acertou ${score} de ${questions.length} perguntas!</h3>
+                    <p>aff errou tudo ai</p>
+                    <button class="quiz-option" onclick="restartQuiz()">tentar de novo</button>
+                `;
+            }
+        }
+
+        function restartQuiz() {
+            const quizContent = document.getElementById('quizContent');
+            const quizResult = document.getElementById('quizResult');
+            
+            quizResult.style.display = 'none';
+            quizContent.style.display = 'block';
+            
+            startQuiz();
+        }
+
+        setupBook();
+
+        function setupBook() {
+            const bookElement = document.getElementById('bookElement');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            const bookProgress = document.getElementById('bookProgress');
+            
+            const bookPages = [
+                {
+                    type: 'cover',
+                    title: 'Natally',
+                    image: 'https://i.imgur.com/0NZ0wYx.png',
+                    subtitle: 'OI LE TUDAOO'
+                },
+                {
+                    type: 'content',
+                    title: 'Adendos',
+                    content: `OIIIIIII MINHA NENEMZINHA, eu queria que você pudesse ler isso a qualquer momento entao por isso eu pedi ajuda dos meus amigos pra fazer esse site, eu te amooooooo
+
+                               todos os textos eu escrevi bem informal, acho que expressa mais o que eu penso e sinto, tudo é realmente oque é pra ser, e eu também fiquei pensando e reescrevendo eles todos os dias, pq acho que cada dia eu podia pensar de uma forma melhor sobre como dizer oque eu sinto, eu te amo bebe ❤️`
+                },
+                {
+                    type: 'content',
+                    title: 'Capítulo 1 - Conhecer',
+                    content: `eu amo o jeito que a gente se conheceu, eu entrei no servidor da lottus e simplesmente vi voce mandando print da minha musica e falando que era muito boa.. (TIPO ????????? BIZARRO, BEM NA HORA QUE EU ENTREI) nao demorou muito pra gente começar a conversar, se entrosar e FINALMENTE ir call, e mesmo que não tenha sido eu e você logo de primeira, foi muito bom (mas eu pensava que voce nao gostava de mim pq voce falava muito pouco) MAS EU AMEI TE CONHECER E OUVIR SUA VOZ!!!! bem rapido eu comecei a sentir algo por você e começar a ficar meio bobo alegre quando falava com voce ou recebia mensagem sua, eu ficava MUITO BOBO ALEGRE, eu amei E AMO cada segundo falando com voce e sei que sempre vou AMAR MUITO, voce é minha princesa.`
+                },
+                {
+                    type: 'content',
+                    title: 'Capítulo 2 - Amar',
+                    content: `sem duvidas, a melhor coisa que eu ja senti e continuo sentindo foi receber seu amor e perceber que eu estava te amando! eu so queria sair falando pros meus amigos que estava namorando com voce, mas ainda nao podia.. voce mandava mensagem pra mim e eu ficava MUITO FELIZ E QUERIA RESPONDER NA HORA MESMO, sem contar que voce era a primeira coisa que eu pensava quando acordava e a ultima coisa que eu pensava ao dormir (SE eu nao pensava em voce dormindo tambem ne). por mais que tudo que a gente ta tendo seja meio recente, eu sinto que dessa vez, finalmente, eu me encontrei no amor e quero que isso seja para sempre mesmo, quero casar com voce, ter uma vida com voce e ter filhos lindos. lembro da primeira vez que eu te chamei de amor e essas coisas, falei pra testar sua reaçao e voce começou a chamar tambem KKKKKKKKK E TAMBEM LEMBRO DA SENSAÇAO DE FALAR EU TE AMO (eu fui o primeiro a falar affs) FOI TAO BOA, FOI COMO SOLTAR UM PESO DE DENTRO DE MIM, eu me senti TAO leve..`
+                },
+                {
+                    type: 'content',
+                    title: 'Capítulo 3 - Nós',
+                    content: `a gente ta junto a pouco tempo, mas mesmo antes do eu te amo, a gente ja tava se tratando como se realmente namorados e eu querendo que a gente se assumisse mesmo antes de namorar KKKKKKKKKKKKKKKKKKK tudo isso aqui gira em volta de um simples objetivo, ter voce pra sempre e oficializar isso e eu prometo nao falhar com voce jamais! eu quero que cada experiencia nossa sera unica e especial, assim como esse site aqui. lembro da gente jogando 99 noites, eu amei cada noite que passou E EU MORRI MUITO DE PROPOSITO PRA VOCE ME SALVAR KKKKKKKKKKKKKKKK e quando voce morreu eu fiquei molestando seu corpo SEM VIDA MUAHAHAHAHA e eu quero jogar mais coisas com voce, passar mais tempo com voce e VIVER MINHA VIDA COM VOCE, voce é tudo pra mim, tudo MESMO!`
+                },
+                {
+                    type: 'content',
+                    title: 'Capítulo 4 - Eu',
+                    content: `eu fiz isso aqui so pra falar um pouco sobre mim, nao é taaaaaaao importante assim, mas acho que é mais pra voce me conhecer ou saber de algo que talvez voce nao saiba, ate por que quero que saiba ate meus pensamentos porque eu te amo! as vezes, eu tenho medo de acabar estragando o que temos e isso acabar com tudo pq voce é meu amor, minha princesinha e eu nao quero perder nada disso, entao eu vou me esforçar O MAXIMO pra ser a minha melhor versao com voce e nao deixar nada de ruim acontecer entre nos, porque sinceramente, um dos meus maiores medos atualmente é perder voce, tenho ate um medinho de voce se enjoar de mim pq eu quero estar com voce 24h por 7 dias da semana, fazer voce trabalhar de namorada na escala 7x7 no turno integral de 24 horas. eu te amo muito, eu mudaria tudo e qualquer coisa so pra continuar sendo a pessoa certa pra voce PRA SEMPRE, eu te amo!`
+                },
+                {
+                    type: 'content',
+                    title: 'Capítulo 5 - Natally',
+                    content: `acho que esse vai ser o maior texto, e com um bom motivo: quero falar de voce e SO de voce. quero te agradecer, meu amor. por sempre pensar em mim, cuidar de mim, se preocupar, querer saber como eu estou, o que estou fazendo, como foi meu dia. voce sempre sabe me deixar bem, e eu quero poder fazer o mesmo por voce. voce é uma pessoa incrivel, de verdade. eu amo cada dia ao seu lado, cada hora, cada minuto. tudo com voce vale a pena. nao consigo mais imaginar minha vida sem voce. meu dia, minha noite, meus sonhos… tudo tem voce. tudo gira em torno de voce e de como voce é especial. eu amo o seu jeito, a forma como fala, como age. amo seu rosto, seus olhos, seu sorriso, seu cabelo, tudo. cada pedacinho seu é perfeito pra mim, e eu nao mudaria nada. queria que voce conseguisse se ver como eu te vejo, pra entender o quanto é incrivel, o quanto merece tudo de bom, o quanto é capaz. você é inteligente, madura, dedicada, e muito mais do que eu um dia imaginei encontrar. eu amo te ter, amo ser seu, amo te amar. amo nossas conversas a noite, quando a gente ja esta quase dormindo e ainda assim nao quer parar de falar. amo poder ser eu mesmo com voce, te entender, te sentir, fazer parte da sua vida. quero estar com voce pra sempre, construir tudo ao seu lado. voce é o amor da minha vida, a minha princesa. prometo dar o meu melhor por voce. obrigado por tudo, meu amor. voce é, e sempre vai ser, o amor da minha vida, Natally.`
+                },
+                {
+                    type: 'end',
+                    image: 'https://i.imgur.com/txkzzsf.png',
+                    message: 'eu te amo e tals'
+                }
+            ];
+            
+            let currentPage = 0;
+            
+            function renderPages() {
+                bookElement.innerHTML = '';
+                
+                bookPages.forEach((page, index) => {
+                    const pageElement = document.createElement('div');
+                    pageElement.className = 'page';
+                    pageElement.id = `page-${index}`;
+                    
+                    if (page.type === 'cover') {
+                        pageElement.classList.add('book-cover');
+                        pageElement.innerHTML = `
+                            <div class="page-content">
+                                <div>
+                                    <img src="${page.image}" alt="Capa" class="cover-image">
+                                    <h1 class="cover-title">${page.title}</h1>
+                                    <p class="cover-subtitle">${page.subtitle}</p>
+                                </div>
+                                <p class="page-number">Página ${index + 1}</p>
+                            </div>
+                        `;
+                    } else if (page.type === 'end') {
+                        pageElement.classList.add('book-cover');
+                        pageElement.innerHTML = `
+                            <div class="page-content">
+                                <div>
+                                    <img src="${page.image}" alt="Final" class="cover-image">
+                                    <p class="cover-subtitle">${page.message}</p>
+                                </div>
+                                <p class="page-number">Página ${index + 1}</p>
+                            </div>
+                        `;
+                    } else {
+                        pageElement.innerHTML = `
+                            <div class="page-content">
+                                <h3 class="page-title">${page.title}</h3>
+                                <div class="page-text">${page.content}</div>
+                                <p class="page-number">Página ${index + 1}</p>
+                            </div>
+                        `;
+                    }
+                    
+                    bookElement.appendChild(pageElement);
+                });
+                
+                updateBookState();
+            }
+            
+            function updateBookState() {
+                prevBtn.disabled = currentPage === 0;
+                nextBtn.disabled = currentPage === bookPages.length - 1;
+                
+                const progress = (currentPage / (bookPages.length - 1)) * 100;
+                bookProgress.style.width = `${progress}%`;
+                
+                document.querySelectorAll('.page').forEach((page, index) => {
+                    if (index === currentPage) {
+                        page.style.display = 'block';
+                        page.style.zIndex = bookPages.length - index;
+                    } else {
+                        page.style.display = 'none';
+                    }
+                });
+            }
+            
+            function nextPage() {
+                if (currentPage < bookPages.length - 1) {
+                    currentPage++;
+                    updateBookState();
+                }
+            }
+            
+            function prevPage() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    updateBookState();
+                }
+            }
+            
+            prevBtn.addEventListener('click', prevPage);
+            nextBtn.addEventListener('click', nextPage);
+            
+            renderPages();
+        }
+    </script>
+</body>
+</html>
